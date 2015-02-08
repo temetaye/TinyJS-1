@@ -54,12 +54,23 @@ public class P1 {
         } else if (token == Tokens.KEY_VAR) {
             next();
             parseVarDecAssign();
-             if (Tokenizer.isStm(token) || token == Tokens.KEY_VAR || token == Tokens.KEY_FUNCTION) {
+            if (Tokenizer.isStm(token) || token == Tokens.KEY_VAR || token == Tokens.KEY_FUNCTION) {
+                
                 mixStatments();
 
             }
 
+        } else if(token == Tokens.KEY_FUNCTION){
+            System.out.println("Function found");
+            next();
+            parseFunction();
+            if (Tokenizer.isStm(token) || token == Tokens.KEY_VAR || token == Tokens.KEY_FUNCTION) {
+                 next();
+                mixStatments();
+
+            }
         }
+        
 
     }
 
@@ -325,5 +336,42 @@ public class P1 {
         mixStatments();
         next();
         expect(Tokens.CLOSE_PAR);
+        next();
+    }
+
+    private void parseFunction() throws ParserException{
+        expect(Tokens.ID);
+        next();
+        expect(Tokens.OPEN_BRACKET);
+        next();
+        if(token == Tokens.CLOSE_BRACKET){
+            System.out.println("function with out params" );
+            next();
+            block();
+        }else{
+            System.out.println("function with params found");
+            parseParameter();
+            if(token == Tokens.CLOSE_BRACKET){
+                next();
+                System.out.println("parameters are parsed ");
+                block();
+            }
+            
+        } 
+            
+    }
+
+    private void parseParameter()throws ParserException{
+        expect(Tokens.ID);
+        next();
+        if(token == Tokens.COMMA){
+            moreParams();
+        }
+        
+    }
+
+    private void moreParams()throws ParserException{
+        parseParameter();
+    
     }
 }

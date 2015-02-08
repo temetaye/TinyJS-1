@@ -171,20 +171,24 @@ public class Tokenizer {
                     }
                     break;
                 case '+':
-                    if (stream.nextToken() == '+') {
+                    int newValToken = stream.nextToken();
+                    if (newValToken == '+') {
                         nextToken = Tokens.UNIT_INCR;
-                    } else if (stream.nextToken() == '=') {
+                    } else if (newValToken == '=') {
                         nextToken = Tokens.ASSIGN_INCR;
                     } else {
                         nextToken = Tokens.PLUS_SIGN;
+                        stream.pushBack();
                     }
                     break;
                 case '-':
-                    if (stream.nextToken() == '-') {
+                    int newValTokenMinus = stream.nextToken();
+                    if (newValTokenMinus == '-') {
                         nextToken = Tokens.UNIT_DECR;
-                    } else if (stream.nextToken() == '=') {
+                    } else if (newValTokenMinus == '=') {
                         nextToken = Tokens.ASSIGN_DECR;
                     } else {
+                        stream.pushBack();
                         nextToken = Tokens.MINUS_SIGN;
                     }
                     break;
