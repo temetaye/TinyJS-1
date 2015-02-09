@@ -1,0 +1,103 @@
+ 
+ %tokens%
+
+FUNCTION					= "function"
+RETURN						= "return"
+COMMA 						= ","
+OPENBRA						= "("
+CLOSEBRA					= ")"
+VAR 						= "var"
+EQUAL						= "="
+SEMICOL						= ";"
+COLON						= ":"
+IF 							= "if"
+ELSE 						= "else"
+PRINT						= "println"
+FOR 						= "for"
+DO							= "do"
+WHILE						= "while"
+SWITCH						= "switch"
+CASE						= "case"
+DEFAULT						= "default"
+CONTINUE					= "continue"
+BREAK						= "break"
+EVAL						= "eval"
+ADD                         = "+"
+SUB                        	= "-"
+MUL                         = "*"
+DIV                         = "/"
+OPENPAR		                = "{"
+CLOSEPAR                    = "}"
+ISEQUAL						= "=="
+ISNOTEQUAL					= "!="
+LESSTHAN					= "<"
+LTEQUAL 					= "<="
+GREATHAN					= ">"
+GTEQUAL					    = ">="
+NOT							= "!"
+AND							= "&&"
+OR							= "||"
+QUOTE						= ' " '
+NUMBER                      = <<([1-9][0-9]*)|0>>
+IDENTIFIER		    		= <<[a-zA-Z][a-zA-Z0-9]*>>
+STRING						= <<"[^"*]">>
+WHITESPACE                  = <<[ \t\n\x0B\f\r| \t\n\r]+>> %ignore%
+
+
+%productions%
+ Program: MixStatements
+ Block: { MixStatements }
+ MixStatements : Statement MixStatements | "var" Identifier Declaration ";" MixStatements | Function MixStatements | "ε"
+ Function: "function" Identifier ( ParameterList ) Block
+ ParameterList: Identifier MoreParams 
+ MoreParams: ","  ParameterList | "ε"
+ Statement:
+          |"if" Condition Block ElseStmt 
+          |"while" Condition Block
+          |"for" "(" Identifier "=" Exp ";" Exp ";" Identifier "=" Exp ")" Block
+		  |"do" Block "while"  Condition ";"
+          |SwitchStmt
+		  |"break" ";"
+          |"continue" ";"
+          |"return" Exp";"
+		  |"println" "(" Exp ")" ";"
+		  |Identifier = Exp;
+		  |EvalExp ";" 
+ ElseStmt: "else" Block |"ε"
+ Condition: "(" Exp ")"
+ SwitchStmt: "switch" "(" Identifier ")" "{" CaseBlock "}"
+ CaseBlock: CaseClauses | DefaultCase
+ CaseClauses: CaseClause CaseClauses | "ε"
+ CaseClause: "case" Const ":" MixStatements
+ DefaultCase: "default" ":" MixStatements CaseClauses
+ Declaration: MoreVar | "=" Exp
+ MoreVar: "," Identifier MoreVar | "ε"
+ EvalExp = "eval" "(" EvalParam ")"
+ EvalParam = STRING | Identifier
+ 
+ Exp: AndExp MoreAndExps
+ MoreAndExps: "||" AndExp | "ε"
+ AndExp: UnaryRelExp MoreUnaryRelExps
+ MoreUnaryRelExps: "&&" UnaryRelExp | "ε"
+ UnaryRelExp: "!" UnaryRelExp | RelExp
+ RelExp: SumExp MoreSumExps
+ MoreSumExps: RelOp SumExp | "ε"
+ RelOp: "<=" | "<" | ">" | ">=" | "==" | "!="
+ SumExp: Term MoreTerms
+ MoreTerms: "+" Term | "-" Term | "ε"
+ Term: UnaryExp MoreUnaryExps
+ MoreUnaryExps: "*" UnaryExp |  "/" UnaryExp | "ε"
+ UnaryExp: "-" UnaryExp | Factor
+ Factor:"(" Exp ")" | Const|CALL_IDENT
+ CALL_IDENT:Identifier|Call
+ Call: Identifier "(" Params ")"
+ Params: ParamList | "ε"
+ ParamList:   moreParams
+ moreParams=  "," ParamList | "ε"
+ Const: NUMBERC | STRING | true | false
+ Identifier = IDENTIFIER;
+ 
+
+
+		  
+		  
