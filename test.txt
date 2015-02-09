@@ -1,1 +1,9 @@
+
+if(x > 5){var n = y / 2;} else {var m = i - 9;}
+var n = 7;
+var m = t*y;
+eval(m);
 eval(n);
+println (t);
+t = add(o,m);
+function add(){return add(a);}

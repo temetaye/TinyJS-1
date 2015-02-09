@@ -80,7 +80,7 @@ public class Tokenizer {
                         nextToken = Tokens.KEY_IF;
                     } else if (value.equals("for")) {
                         nextToken = Tokens.KEY_FOR;
-                    } else if (value.equals("ëlse")) {
+                    } else if (value.equals("else")) {
                         nextToken = Tokens.KEY_ELSE;
                     } else if (value.equals("return")) {
                         nextToken = Tokens.KEY_RETURN;
@@ -239,6 +239,7 @@ public class Tokenizer {
     public static boolean isStm(Tokens t) {
         switch (t) {
             case KEY_IF:
+            //case KEY_ELSE:
             case KEY_WHILE:
             case KEY_FOR:
             case KEY_DO:

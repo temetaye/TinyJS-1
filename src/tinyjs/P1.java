@@ -80,7 +80,7 @@ public class P1 {
         next();
         declaration();
         expect(Tokens.SEMI_COLON);
-        ///next();
+        next();
     }
 
     /*
@@ -366,6 +366,7 @@ public class P1 {
     private void paramList() throws ParserException {
         expression();
         if (token == Tokens.COMMA) {
+            next();
             paramList();
         } else {
             System.out.println("Function with parameters is found" + token.toString() + lookahead.getStringValue());
@@ -393,7 +394,7 @@ public class P1 {
         expect(Tokens.OPEN_PAR);
         next();
         mixStatments();
-        next();
+       // next();
         expect(Tokens.CLOSE_PAR);
         next();
     }
