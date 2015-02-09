@@ -16,7 +16,7 @@ public class P1 {
 
     private Tokenizer lookahead;
     private Tokens token;
-    private Tokens test;
+    
 
     public P1() {
         // init parser ... 
