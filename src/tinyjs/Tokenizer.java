@@ -8,13 +8,17 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import tinyjs.Token.Tokens;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 
 /**
  *
  * @author Alexy
  */
 public class Tokenizer {
-
+    
+ //   public final Pattern regex;
+ //   public final int token;
     private StreamTokenizer stream;
     private Tokens nextToken;
 
@@ -55,8 +59,11 @@ public class Tokenizer {
             return stream.sval;
         } else if (stream.ttype == StreamTokenizer.TT_NUMBER) {
             return Double.toString(stream.nval);
-        } else {
+        }/*else if(stream.sval.matches(""[^"]*"", 1 ) ) {
+            
+        } */else { 
             return String.valueOf((char) stream.ttype);
+            
         }
     }
 
@@ -83,7 +90,7 @@ public class Tokenizer {
                         nextToken = Tokens.KEY_FUNCTION;
                     } else if (value.equals("eval")) {
                         nextToken = Tokens.KEY_EVAL;
-                    } else if (value.equals("ëlse")) {
+                    } else if (value.equals("else")) {
                         nextToken = Tokens.KEY_ELSE;
                     } else if (value.equals("true")) {
                         nextToken = Tokens.KEY_TRUE;
@@ -112,6 +119,9 @@ public class Tokenizer {
                 case StreamTokenizer.TT_NUMBER:
                     nextToken = Tokens.NUMBER;
                     break;
+            //    case '"([^\"]*"':
+              //      nextToken = Tokens.STRING;
+                //    break;
                 case '{':
                     nextToken = Tokens.OPEN_PAR;
                     break;

@@ -98,9 +98,12 @@ public class P1 {
                 next();
                 condition();
                 block();
+                //next();
 
                 if (token == Tokens.KEY_ELSE) {
                     next();
+                    block();
+                   // next();
 
                 }
 
@@ -112,17 +115,69 @@ public class P1 {
                 break;
 
             case KEY_WHILE:
+                System.out.println("entering while loop");
                 next();
                 condition();
+                block();
                 break;
-            //block();
+            case KEY_DO:
+                System.out.println("entering do while loop");
+                next();
+                block();
+                expect(Tokens.KEY_WHILE);
+                next();
+                condition();
+                expect(Tokens.SEMI_COLON);
+                break;           
 
             case KEY_FOR:
                 System.out.println("For loop found");
                 next();
                 parseForLoop();
                 break;
-
+            case KEY_SWITCH:
+                System.out.println("parsing switch cases....");
+                next();
+                parseSwitch();
+                break;
+            case KEY_BREAK:
+                next();
+                expect(Tokens.SEMI_COLON);
+                System.out.println("breaking out.....");
+                break;
+            case KEY_CONTINUE:
+                next();
+                expect(Tokens.SEMI_COLON);
+                System.out.println("continueing to the next .....");
+                break;
+            case KEY_RETURN:
+                next();
+                expression();
+                expect(Tokens.SEMI_COLON);
+                System.out.println("returning results....   ");
+                break;
+            case KEY_PRINTLN:
+                System.out.println("printing output ...");
+                next();
+                expect(Tokens.OPEN_BRACKET);
+                next();
+                expression();
+                expect(Tokens.CLOSE_BRACKET);
+                next();
+                expect(Tokens.SEMI_COLON);
+                break;
+            case ID:
+                next();
+                expect(Tokens.ASSIGN);
+                next();
+                expression();
+                expect(Tokens.SEMI_COLON);
+                break;
+            case KEY_EVAL:
+                next();
+                parseEval();
+                expect(Tokens.SEMI_COLON);
+                break;
             default:
                 break;
         }
@@ -283,7 +338,7 @@ public class P1 {
             next();   //  we will check if the expression is next or not 
             expect(Tokens.CLOSE_BRACKET);
         } else if (token == Tokens.NUMBER || token == Tokens.KEY_TRUE || token == Tokens.KEY_FALSE) { // no String for now
-
+            parseConstants();
             System.out.println("Constant found and the value is  " + Tokens.valueOf(token.toString()));
             next();
         } else if (token == Tokens.ID) {
@@ -293,6 +348,8 @@ public class P1 {
                 next();
                 if (token == Tokens.CLOSE_BRACKET) {
                     System.out.println("Function with out params");
+                    next();
+                    expect(Tokens.SEMI_COLON);
                 } else {
                     params();
                 }
@@ -312,6 +369,8 @@ public class P1 {
             paramList();
         } else {
             System.out.println("Function with parameters is found" + token.toString() + lookahead.getStringValue());
+            next();
+            expect(Tokens.SEMI_COLON);
         }
     }
 
@@ -374,4 +433,91 @@ public class P1 {
         parseParameter();
     
     }
+
+    private void parseSwitch() throws ParserException{
+        expect(Tokens.OPEN_BRACKET);
+        next();
+        expect(Tokens.ID);
+        next();
+        expect(Tokens.CLOSE_BRACKET);
+        next();
+        expect(Tokens.OPEN_PAR);
+        next();
+        ParseCaseBlock();
+        expect(Tokens.CLOSE_PAR);
+        
+    }
+
+    private void ParseCaseBlock()throws ParserException{
+        if(token == Tokens.KEY_CASE){
+            next();
+            caseClouses();
+        }else if (token == Tokens.KEY_DEFAULT){
+            next();
+            defaultClause();
+        }
+    }
+
+    private void caseClouses() throws ParserException{
+        caseClouse();
+        if(token == Tokens.KEY_CASE){
+            next();
+            caseClouses();
+        } else if(token == Tokens.KEY_DEFAULT){
+            next();
+            defaultClause();
+        }
+    }
+    private void caseClouse() throws ParserException{
+        System.out.println("parsing case ......"+token);
+        parseConstants();
+        next();
+        expect(Tokens.COLON);
+        next();
+        mixStatments();
+        next();
+        
+        
+        
+    }
+    private void defaultClause()throws ParserException{
+        System.out.println("parsing the default case ..." + token);
+        expect(Tokens.COLON);
+        next();
+        mixStatments();
+        next();
+        if(token == Tokens.KEY_CASE){
+            next();
+            caseClouses();
+        }
+        
+    }
+
+    private void parseConstants() throws ParserException{
+        if (token == Tokens.NUMBER || token == Tokens.KEY_TRUE || token == Tokens.KEY_FALSE) {
+            
+        }else {
+            System.out.println("Error: unsupported case value is used "+ token);
+            
+        }
+    }
+
+    private void parseEval() throws ParserException{
+        System.out.println("parsing eval expression ....");
+        expect(Tokens.OPEN_BRACKET);
+        next();
+        evalParam();
+        expect(Tokens.CLOSE_BRACKET);
+        next();
+        
+        
+    }
+
+    private void evalParam()throws ParserException{
+        System.out.println("this is eval param...." + lookahead.getStringValue());
+        expect(Tokens.ID);
+        next();
+    }
+
+   
 }
